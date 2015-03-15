@@ -1,5 +1,9 @@
 var request = require("request");
 var env = require('jsdom').env;
+var fs = require('fs');
+var moment = require('moment');
+
+var sum = [];
 request('https://github.com/trending?since=weekly', function (error, response, body) {
   if (!error && response.statusCode == 200) {
     env(body, function (errors, window) {
@@ -20,8 +24,15 @@ request('https://github.com/trending?since=weekly', function (error, response, b
           console.log("exception occurred!");
           throw "Exception";
         }
-        console.log( url, description, language, starnum );
-        //console.log(valueObj);
+        sum.push({url:url,description:description, language: language, starnum: starnum});
+        if( index == 24){
+          fs.writeFile(__dirname + "/weekly/", JSON.stringify(sum) , function(err) {
+            if(err) {
+                return console.log(err);
+            }
+            console.log("The file was saved!");
+        });
+        }
       });
     });
   }
