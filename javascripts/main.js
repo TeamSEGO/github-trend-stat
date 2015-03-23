@@ -1,5 +1,6 @@
 var korDateFmt ="YYYY-MM-DD";
 var startMoment = moment("2015-03-17");
+var grpData ={};
 var getDateSeries = function( from, to ){
   var diff_y_1 = to.diff(from,'days') - 1;
   var days = [];
@@ -14,16 +15,24 @@ var getDateSeries = function( from, to ){
 
 $( document ).ready(function(){
   var days = getDateSeries(startMoment,moment());
+  grpData["labels"] = days;
   console.log(days);
   async.each( days, function( day, cb ){
     $.ajax({url: "./daily/"+day+".json"}).done(function(data){
-      stackData( data, cb );
+      stackData( day, data, cb );
     });
   }, graph );
 });
-var stackData = function(data,cb){
+var stackData = function( day, data, cb ){
   async.EachSeries(data, function(module, ccb){
-    
+    var url = module['url'];
+    var day = data;
+    var starnum = module['starnum'];
+    if(!grpData[url]){
+      grpData[url] =
+    }else{
+
+    }
     ccb();
   }, function(){
     cb();
@@ -59,5 +68,4 @@ var data = {
 var graph = function(){
   var ctx = document.getElementById("trend-stat").getContext("2d");
   var myLineChart = new Chart(ctx).Line(data);
-
 }
