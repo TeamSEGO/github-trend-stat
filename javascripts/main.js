@@ -17,11 +17,20 @@ $( document ).ready(function(){
   console.log(days);
   async.each( days, function( day, cb ){
     $.ajax({url: "./daily/"+day+".json"}).done(function(data){
-      console.log(day, data);
-      cb();
+      stackData( data, cb );
     });
   }, graph );
 });
+var stackData = function(data,cb){
+  async.EachSeries(data, function(module, ccb){
+    
+    ccb();
+  }, function(){
+    cb();
+  });
+
+
+}
 var data = {
     labels: ["January", "February", "March", "April", "May", "June", "July"],
     datasets: [
