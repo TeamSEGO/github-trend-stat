@@ -19,12 +19,13 @@ $( document ).ready(function(){
   console.log(days);
   async.each( days, function( day, cb ){
     $.ajax({url: "./daily/"+day+".json"}).done(function(data){
-      stackData( day, data, cb );
+      var idx = getIndexFromNums(days,day);
+      stackData( idx, day, data, cb );
     });
   }, graph );
 });
-var stackData = function( day, data, cb ){
-  async.EachSeries(data, function(module, ccb){
+var stackData = function( idx, day, data, cb ){
+  async.each(data, function(module, ccb){
     var url = module['url'];
     var day = data;
     var starnum = module['starnum'];
@@ -35,7 +36,7 @@ var stackData = function( day, data, cb ){
       if(datasets[i]["label"]) index=i;
     }
     if(exists){
-      //datasets[index]["label"]..
+      datasets[index]["label"]["data"][idx] = starnum;
     }else{
       //datasets.push...
     }
@@ -43,8 +44,12 @@ var stackData = function( day, data, cb ){
   }, function(){
     cb();
   });
-
-
+}
+var getIndexFromNums = function (days,day){
+  var len  = days.length;
+  for(var i=0;i<len;i++){
+    if(days[i]==day) return i;
+  }
 }
 var data = {
     labels: ["January", "February", "March", "April", "May", "June", "July"],
