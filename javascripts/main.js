@@ -28,10 +28,16 @@ var stackData = function( day, data, cb ){
     var url = module['url'];
     var day = data;
     var starnum = module['starnum'];
-    if(!grpData[url]){
-      grpData[url] =
+    var datasets = grpData["datasets"];
+    var len = datasets.length;
+    var index = -1;
+    for(var i=0;i<len;i++){
+      if(datasets[i]["label"]) index=i;
+    }
+    if(exists){
+      //datasets[index]["label"]..
     }else{
-
+      //datasets.push...
     }
     ccb();
   }, function(){
