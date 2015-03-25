@@ -16,29 +16,49 @@ var getDateSeries = function( from, to ){
 $( document ).ready(function(){
   var days = getDateSeries(startMoment,moment());
   grpData["labels"] = days;
+  grpData["datasets"] = [];
   console.log(days);
   async.each( days, function( day, cb ){
     $.ajax({url: "./daily/"+day+".json"}).done(function(data){
       var idx = getIndexFromNums(days,day);
-      stackData( idx, day, data, cb );
+      var len = days.length;
+      stackData( idx, len, day, data, cb );
     });
   }, graph );
 });
-var stackData = function( idx, day, data, cb ){
+var stackData = function( idx, lenOfDay, day, data, cb ){
   async.each(data, function(module, ccb){
     var url = module['url'];
     var day = data;
     var starnum = module['starnum'];
     var datasets = grpData["datasets"];
+
     var len = datasets.length;
     var index = -1;
     for(var i=0;i<len;i++){
       if(datasets[i]["label"]) index=i;
     }
-    if(exists){
+    if(index>0){
       datasets[index]["label"]["data"][idx] = starnum;
     }else{
-      //datasets.push...
+      datasets[index] = {};
+      datasets[index]["label"] =  url;
+      var randomColor = function(){
+        var r = Math.floor((Math.random() * 255) + 1);
+        var g = Math.floor((Math.random() * 255) + 1);
+        var b = Math.floor((Math.random() * 255) + 1);
+        return r +"," +g+"," + b;
+      }();
+      console.log(randomColor,idx, starnum);
+      datasets[index]["fillColor"] = "rgba("+randomColor+",0.2)";
+      datasets[index]["strokeColor"] = "rgba("+randomColor+",1)";
+      datasets[index]["pointColor"] = "rgba("+randomColor+",1)";
+      datasets[index]["pointStrokeColor"] = "#fff";
+      datasets[index]["pointHighlightFill"]= "#fff";
+      datasets[index]["pointHighlightStroke"] = "rgba("+randomColor+",1)";
+      datasets[index]["label"]["data"]=new Array(lenOfDay);
+      console.log(datasets[index]["label"]["data"]);
+      datasets[index]["label"]["data"][idx] = starnum;
     }
     ccb();
   }, function(){
@@ -51,6 +71,7 @@ var getIndexFromNums = function (days,day){
     if(days[i]==day) return i;
   }
 }
+/*
 var data = {
     labels: ["January", "February", "March", "April", "May", "June", "July"],
     datasets: [
@@ -76,6 +97,7 @@ var data = {
         }
     ]
 };
+*/
 var graph = function(){
   var ctx = document.getElementById("trend-stat").getContext("2d");
   var myLineChart = new Chart(ctx).Line(data);
