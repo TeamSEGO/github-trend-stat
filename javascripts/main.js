@@ -31,18 +31,18 @@ var stackData = function( idx, lenOfDay, day, data, cb ){
     var url = module['url'];
     var day = data;
     var starnum = module['starnum'];
-    var datasets = grpData["datasets"];
+    grpData["datasets"];
 
-    var len = datasets.length;
+    var len = grpData["datasets"].length;
     var index = -1;
     for(var i=0;i<len;i++){
-      if(datasets[i]["label"]) index=i;
+      if(grpData["datasets"][i]["label"]) index=i;
     }
-    if(index>0){
-      datasets[index]["label"]["data"][idx] = starnum;
+    if(index > 0){
+      grpData["datasets"][index]["data"][idx] = starnum;
     }else{
-      datasets[index] = {};
-      datasets[index]["label"] =  url;
+      var ds = {};
+      ds["label"] =  url;
       var randomColor = function(){
         var r = Math.floor((Math.random() * 255) + 1);
         var g = Math.floor((Math.random() * 255) + 1);
@@ -50,15 +50,16 @@ var stackData = function( idx, lenOfDay, day, data, cb ){
         return r +"," +g+"," + b;
       }();
       console.log(randomColor,idx, starnum);
-      datasets[index]["fillColor"] = "rgba("+randomColor+",0.2)";
-      datasets[index]["strokeColor"] = "rgba("+randomColor+",1)";
-      datasets[index]["pointColor"] = "rgba("+randomColor+",1)";
-      datasets[index]["pointStrokeColor"] = "#fff";
-      datasets[index]["pointHighlightFill"]= "#fff";
-      datasets[index]["pointHighlightStroke"] = "rgba("+randomColor+",1)";
-      datasets[index]["label"]["data"]=new Array(lenOfDay);
-      console.log(datasets[index]["label"]["data"]);
-      datasets[index]["label"]["data"][idx] = starnum;
+      ds["fillColor"] = "rgba("+randomColor+",0.2)";
+      ds["strokeColor"] = "rgba("+randomColor+",1)";
+      ds["pointColor"] = "rgba("+randomColor+",1)";
+      ds["pointStrokeColor"] = "#fff";
+      ds["pointHighlightFill"]= "#fff";
+      ds["pointHighlightStroke"] = "rgba("+randomColor+",1)";
+      ds["data"]=[];
+      ds["data"][idx] = starnum;
+      console.log(ds);
+      grpData["datasets"].push(ds);
     }
     ccb();
   }, function(){
@@ -100,5 +101,5 @@ var data = {
 */
 var graph = function(){
   var ctx = document.getElementById("trend-stat").getContext("2d");
-  var myLineChart = new Chart(ctx).Line(data);
+  var myLineChart = new Chart(ctx).Line(grpData);
 }
