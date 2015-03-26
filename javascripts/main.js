@@ -21,7 +21,13 @@ $( document ).ready(function(){
     $.ajax({url: "./daily/"+day+".json"}).done(function(data){
       var idx = getIndexFromNums(days,day);
       var len = days.length;
-      stackData( idx, len, day, JSON.parse(data), cb );
+      if( (typeof data === "object") && (data !== null) )
+      {
+        stackData( idx, len, day, data, cb );
+      }else{
+        stackData( idx, len, day, JSON.parse(data), cb );
+      }
+
     }).fail(function(){cb();});
   }, graph );
 });
