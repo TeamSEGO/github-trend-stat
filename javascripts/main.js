@@ -2,16 +2,15 @@ var korDateFmt ="YYYY-MM-DD";
 var startMoment = moment("2015-03-17");
 var grpData ={};
 var getDateSeries = function( from, to ){
-  var diff_y_1 = to.diff(from,'days') - 1;
+  var dfy = to.diff(from,'days') - 1;
   var days = [];
   days.push(from.format(korDateFmt).toString());
   while(true){
     days.push(from.add(1,'days').format(korDateFmt).toString());
-    if(!diff_y_1--)break;
+    if(!dfy--)break;
   }
   return days;
 }
-
 
 $( document ).ready(function(){
   var days = getDateSeries(startMoment,moment());
@@ -21,16 +20,13 @@ $( document ).ready(function(){
     $.ajax({url: "./daily/"+day+".json"}).done(function(data){
       var idx = getIndexFromNums(days,day);
       var len = days.length;
-      if( (typeof data === "object") && (data !== null) )
-      {
+      if( (typeof data === "object") && (data !== null) ){
         stackData( idx, len, day, data, cb );
-      }else{
-        stackData( idx, len, day, JSON.parse(data), cb );
-      }
-
+      }else{stackData( idx, len, day, JSON.parse(data), cb );}
     }).fail(function(){cb();});
   }, graph );
 });
+
 var stackData = function( idx, lenOfDay, day, data, cb ){
   var getArrayFromData = function(lenOfDay){
     var arr = [];
@@ -68,7 +64,6 @@ var stackData = function( idx, lenOfDay, day, data, cb ){
       ds["pointHighlightStroke"] = "rgba("+randomColor+",1)";
       ds["data"] = getArrayFromData(lenOfDay);
       ds["data"][idx] = starnum;
-
       grpData["datasets"].push(ds);
     }
     ccb();
