@@ -23,6 +23,8 @@ $( document ).ready(function(){
       var idx = getIndexFromNums(days,day);
       var len = days.length;
       stackData( idx, len, day, data, cb );
+    }.fail(function() {
+      cb();
     });
   }, graph );
 });
