@@ -22,7 +22,6 @@ $( document ).ready(function(){
     $.ajax({url: "./daily/"+day+".json"}).done(function(data){
       var idx = getIndexFromNums(days,day);
       var len = days.length;
-      console.log(idx, days);
       stackData( idx, len, day, JSON.parse(data), cb );
     }).fail(function(){cb();});
   }, graph );
