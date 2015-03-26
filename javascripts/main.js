@@ -17,7 +17,6 @@ $( document ).ready(function(){
   var days = getDateSeries(startMoment,moment());
   grpData["labels"] = days;
   grpData["datasets"] = [];
-  console.log(days);
   async.each( days, function( day, cb ){
     $.ajax({url: "./daily/"+day+".json"}).done(function(data){
       var idx = getIndexFromNums(days,day);
@@ -63,7 +62,7 @@ var stackData = function( idx, lenOfDay, day, data, cb ){
       ds["pointHighlightStroke"] = "rgba("+randomColor+",1)";
       ds["data"] = getArrayFromData(lenOfDay);
       ds["data"][idx] = starnum;
-      console.log(ds["label"]);
+
       grpData["datasets"].push(ds);
     }
     ccb();
