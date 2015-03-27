@@ -2,6 +2,7 @@ var request = require("request");
 var env = require('jsdom').env;
 var fs = require('fs');
 var moment = require('moment');
+var async = require('async');
 
 var parseToJson = exports.parseToJson = function(weeklyOrDaily,callback){
   var sum = [];
@@ -38,4 +39,16 @@ var parseToJson = exports.parseToJson = function(weeklyOrDaily,callback){
       });
     }
   });
+}
+
+var eachFileAdjust = function(){
+  async.each( days, function( day, cb ){
+    $.ajax({url: "./daily/"+day+".json"}).done(function(data){
+      var idx = getIndexFromNums(days,day);
+      var len = days.length;
+      if( (typeof data === "object") && (data !== null) ){
+        stackData( idx, len, day, data, cb );
+      }else{stackData( idx, len, day, JSON.parse(data), cb );}
+    }).fail(function(){cb();});
+  }, graph );
 }
