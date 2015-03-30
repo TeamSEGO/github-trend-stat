@@ -3,6 +3,8 @@ var env = require('jsdom').env;
 var fs = require('fs');
 var moment = require('moment');
 var async = require('async');
+var trendData ={};
+
 
 var parseToJson = exports.parseToJson = function(weeklyOrDaily,callback){
   var sum = [];
@@ -51,4 +53,55 @@ var eachFileAdjust = function(){
       }else{stackData( idx, len, day, JSON.parse(data), cb );}
     }).fail(function(){cb();});
   }, graph );
+}
+
+var stackData = function( idx, lenOfDay, day, data, cb ){
+  var getArrayFromData = function(lenOfDay){
+    var arr = [];
+    arr.push(0);
+    while(lenOfDay--)arr.push(0);
+    return arr;
+  }
+  async.each(data, function(module, ccb){
+    var url = module['url'];
+    var day = data;
+    var starnum = module['starnum'];
+
+    var len = trendData["datasets"].length;
+    var index = -1;
+
+    for(var i=0;i<len;i++){
+      if(trendData["datasets"][i]["label"]==url) index=i;
+    }
+    if(index > 0){
+      trendData["datasets"][index]["data"][idx] = starnum;
+    }else{
+      var ds = {};
+      ds["label"] = url;
+      var randomColor = function(){
+        var r = Math.floor((Math.random() * 255) + 1);
+        var g = Math.floor((Math.random() * 255) + 1);
+        var b = Math.floor((Math.random() * 255) + 1);
+        return r +"," +g+"," + b;
+      }();
+      ds["fillColor"] = "rgba("+randomColor+",0.2)";
+      ds["strokeColor"] = "rgba("+randomColor+",1)";
+      ds["pointColor"] = "rgba("+randomColor+",1)";
+      ds["pointStrokeColor"] = "#fff";
+      ds["pointHighlightFill"]= "#fff";
+      ds["pointHighlightStroke"] = "rgba("+randomColor+",1)";
+      ds["data"] = getArrayFromData(lenOfDay);
+      ds["data"][idx] = starnum;
+      trendData["datasets"].push(ds);
+    }
+    ccb();
+  }, function(){
+    cb();
+  });
+}
+var getIndexFromNums = function (days,day){
+  var len  = days.length;
+  for(var i=0;i<len;i++){
+    if(days[i]==day) return i;
+  }
 }
