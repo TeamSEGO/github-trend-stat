@@ -8,6 +8,9 @@ Can I use DB or?
 incase of "npm install jsdom" version of jsdom is very important.
 you should follow package.json
 
+# where
+[github-trend stat page]( http://teamsego.github.io/github-trend-stat/ )
+
 Usage
 --------------------
 file 
